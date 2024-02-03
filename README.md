@@ -103,3 +103,5 @@ Refer to https://ax.dev/tutorials/gpei_hartmann_service.html and the course tuto
 
 ### Run command
 `pytest`
+
+You can also use the "Testing" sidebar extension to easily run individual tests.
