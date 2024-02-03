@@ -3,7 +3,7 @@ numpy
 pandas
 scikit-learn
 ax-platform
-kaleido==0.1.0.post1 # https://github.com/plotly/Kaleido/issues/134#issuecomment-1215791893, fix for Windows
+kaleido # https://github.com/plotly/Kaleido/issues/134#issuecomment-1215791893, ==0.1.0.post1 is fix for Windows, but not cross-platform
 pytest
 #  scipy
 #  matplotlib
