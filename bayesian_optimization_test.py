@@ -14,11 +14,10 @@ def test_parameters_and_objectives():
             f"Please complete the '...' sections in {script_fname} and remove the '...' from each section"
         )
 
-    global_vars = {}
-    local_vars = {}
-    exec(script_content, global_vars, local_vars)
+    namespace = {}
+    exec(script_content, namespace)
 
-    parameters = local_vars["parameters"]
+    parameters = namespace["parameters"]
 
     assert len(parameters) == 3, f"Expected 3 parameters, got {len(parameters)}"
     dict_keys = ["name", "type", "bounds"]
@@ -48,8 +47,8 @@ def test_parameters_and_objectives():
         ), f"Expected upper bound to be 255, got {parameter['bounds'][1]}"
 
     # check that the objective is defined
-    assert "objectives" in local_vars, "Expected objectives to be defined"
-    objectives = local_vars["objectives"]
+    assert "objectives" in namespace, "Expected objectives to be defined"
+    objectives = namespace["objectives"]
 
     # assert there is only one dictionary item in objectives
     assert len(objectives) == 1, f"Expected 1 objective, got {len(objectives)}"
@@ -71,12 +70,11 @@ def test_parameters_and_objectives():
 
 def test_calls():
     script_content = open("bayesian_optimization.py").read()
-    global_vars = {}
-    local_vars = {}
-    exec(script_content, global_vars, local_vars)
+    namespace = {}
+    exec(script_content, namespace)
 
     # find the LightMixer() object
-    mixers = [v for _, v in local_vars.items() if isinstance(v, LightMixer)]
+    mixers = [v for _, v in namespace.items() if isinstance(v, LightMixer)]
     assert (
         len(mixers) == 1
     ), f"Expected one and only one {LightMixer.__name__} object, but it looks like you created {len(mixers)} {LightMixer.__name__} objects"  # noqa: E501
@@ -89,7 +87,7 @@ def test_calls():
     ), f"{LightMixer.calculate_objective.__name__} not called"
 
     # find the AxClient() object
-    ax_clients = [v for _, v in local_vars.items() if isinstance(v, AxClient)]
+    ax_clients = [v for _, v in namespace.items() if isinstance(v, AxClient)]
     assert (
         len(ax_clients) == 1
     ), f"Expected one and only one {AxClient.__name__} object, but it looks like you created {len(ax_clients)} {AxClient.__name__} objects"  # noqa: E501
@@ -138,7 +136,7 @@ def test_calls():
     ), f"Expected {AxClient.save_to_json_file.__name__} to be called, but `ax_client_snapshot.json` does not exist"  # noqa: E501
 
     # assert that there is at least one AxPlotConfig
-    ax_plot_configs = [v for _, v in local_vars.items() if isinstance(v, AxPlotConfig)]
+    ax_plot_configs = [v for _, v in namespace.items() if isinstance(v, AxPlotConfig)]
     assert (
         len(ax_plot_configs) >= 1
     ), f"Expected at least one {AxPlotConfig.__name__} object using Ax's built-in plotting methods, but it looks like you created {len(ax_plot_configs)} {AxPlotConfig.__name__} objects"  # noqa: E501
