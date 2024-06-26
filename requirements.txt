@@ -1,5 +1,5 @@
 -e . # package from this repo
-numpy
+numpy<2.0
 pandas
 scikit-learn
 ax-platform
