@@ -11,10 +11,18 @@ target_color = {"R": 255, "G": 127, "B": 63}
 mixer = LightMixer(target_color=target_color)
 
 # Define the parameters per the README.md file instructions
-parameters = ...  # IMPLEMENT
+parameters = [
+    {"name": "R", "type": "range", "bounds": [0, 255]},
+    {"name": "G", "type": "range", "bounds": [0, 255]},
+    {"name": "B", "type": "range", "bounds": [0, 255]},
+]
+
 
 # define the objective with the name "mae" (mean absolute error) and minimize=True
-objectives = ...  # IMPLEMENT
+objectives = {
+    "mae": ObjectiveProperties(minimize=True) # 0.05 is the threshold for the objective
+}
+
 
 # Instantiate the AxClient class with `random_seed=42` for reproducibility
 ax_client = AxClient(random_seed=42)
@@ -47,11 +55,16 @@ def evaluate(parameterization):
     {'mae': 0.05}
     """
     # Use the run_color_experiment method of the LightMixer class
-    sensor_data = ...  # IMPLEMENT
+    sensor_data = mixer.run_color_experiment(
+        R=parameterization["R"],
+        G=parameterization["G"],
+        B=parameterization["B"]
+    )
+    
 
     # Compute the objective function value using the calculate_objective method
     # of the LightMixer class
-    results = ...  # IMPLEMENT
+    results = mixer.calculate_objective(sensor_data)
 
     return results
 
@@ -74,10 +87,10 @@ print(f"Best observed color: {best_parameters}")
 print(f"Color misfit: {round(true_mismatch, 1)}")
 
 # Save the entire Ax experiment to a JSON file named ax_client_snapshot.json
-...  # IMPLEMENT
+ax_client.save_to_json_file("ax_client_snapshot.json")
 
 # get the AxClient's optimization trace using the built-in plotting method (objective_optimum can be left off)
-optimization_trace = ...  # IMPLEMENT
+optimization_trace = ax_client.get_optimization_trace(objective_optimum=None)
 
 
 def to_plotly(axplotconfig):
